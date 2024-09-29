@@ -39,8 +39,8 @@ const getCombinedData = async (req, res) => {
 
         res.json(combinedData);
     } catch (error) {
-        console.error("Error Fetching Data", error);
-        res.status(500).json({ message: 'Error fetching data', error: error.message });
+        console.error('Error fetching data:', error); // Log the entire error
+        res.status(500).json({ message: 'Error fetching data', error: error.message, stack: error.stack });
     }
 };
 
