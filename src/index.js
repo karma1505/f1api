@@ -15,7 +15,12 @@ app.get('/', (req, res) => {
 // Use API routes
 app.use('/api', apiRoutes);
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Vercel requires you to export the app
+module.exports = app;
+
+// Start the server only for local development
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+    });
+}
