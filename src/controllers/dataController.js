@@ -1,4 +1,6 @@
 const getCombinedData = async (req, res) => {
+    console.log("Request received:", req.method, req.url);
+    
     const endpoints = {
         carData: 'https://api.openf1.org/v1/car_data',
         drivers: 'https://api.openf1.org/v1/drivers',
@@ -18,7 +20,6 @@ const getCombinedData = async (req, res) => {
     try {
         console.log("Fetching data from multiple endpoints...");
         
-        // Fetch data in parallel
         const responses = await Promise.all([
             fetchData(endpoints.meetings),
             fetchData(endpoints.sessions),
@@ -35,7 +36,8 @@ const getCombinedData = async (req, res) => {
             fetchData(endpoints.weather),
         ]);
 
-        // Organizing the responses
+        console.log("Data fetched successfully:", responses);
+
         const combinedData = {
             meeting: responses[0],
             session: responses[1],
@@ -54,7 +56,7 @@ const getCombinedData = async (req, res) => {
 
         res.json(combinedData);
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error); // Log error for debugging
         res.status(500).json({ 
             message: 'Error fetching data', 
             error: error.message, 
