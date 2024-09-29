@@ -1,8 +1,9 @@
 const express = require('express');
-const { getCombinedData } = require('../controllers/dataController');
+const { fetchData } = require('../controllers/dataController'); // Adjust according to your file structure
 
 const router = express.Router();
 
-router.get('/combined-data', getCombinedData);
+// Define the combined data route
+router.get('/combined-data', fetchData);
 
 module.exports = router;
