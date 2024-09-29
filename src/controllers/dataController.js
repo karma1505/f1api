@@ -1,6 +1,5 @@
 const { fetchData } = require('../services/apiService');
 
-// Controller to fetch combined data from multiple endpoints
 const getCombinedData = async (req, res) => {
     const endpoints = {
         carData: 'https://api.openf1.org/v1/car_data',
@@ -19,34 +18,41 @@ const getCombinedData = async (req, res) => {
     };
 
     try {
-        // Fetching meeting data
-        console.log("Fetching meeting data...");
-        const meetingData = await fetchData(endpoints.meetings);
-        
-        // Fetching session data
-        console.log("Fetching session data...");
-        const sessionData = await fetchData(endpoints.sessions);
+        const combinedData = {};
 
-        const combinedData = {
-            meeting: meetingData,
-            session: sessionData,
-            carData: await fetchData(endpoints.carData),
-            drivers: await fetchData(endpoints.drivers),
-            intervals: await fetchData(endpoints.intervals),
-            laps: await fetchData(endpoints.laps),
-            location: await fetchData(endpoints.location),
-            pit: await fetchData(endpoints.pit),
-            position: await fetchData(endpoints.position),
-            raceControl: await fetchData(endpoints.raceControl),
-            stints: await fetchData(endpoints.stints),
-            teamRadio: await fetchData(endpoints.teamRadio),
-            weather: await fetchData(endpoints.weather),
-        };
+        // Fetch each piece of data with individual error handling
+        try {
+            console.log("Fetching meeting data...");
+            combinedData.meeting = await fetchData(endpoints.meetings);
+        } catch (error) {
+            console.error('Error fetching meeting data:', error.message);
+            combinedData.meeting = null; // Handle accordingly
+        }
 
-        // Sending combined data as JSON response
+        try {
+            console.log("Fetching session data...");
+            combinedData.session = await fetchData(endpoints.sessions);
+        } catch (error) {
+            console.error('Error fetching session data:', error.message);
+            combinedData.session = null; // Handle accordingly
+        }
+
+        // Repeat for each endpoint
+        for (const key in endpoints) {
+            if (!combinedData[key]) { // Avoid re-fetching if error occurred
+                try {
+                    console.log(`Fetching ${key} data...`);
+                    combinedData[key] = await fetchData(endpoints[key]);
+                } catch (error) {
+                    console.error(`Error fetching ${key} data:`, error.message);
+                    combinedData[key] = null; // Handle accordingly
+                }
+            }
+        }
+
         res.json(combinedData);
     } catch (error) {
-        console.error('Error fetching data:', error); // Log the complete error for debugging
+        console.error('General error fetching data:', error);
         res.status(500).json({ 
             message: 'Error fetching data', 
             error: error.message, 
