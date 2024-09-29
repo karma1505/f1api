@@ -1,3 +1,5 @@
+const { fetchData } = require('../services/apiService');
+
 const getCombinedData = async (req, res) => {
     const endpoints = {
         carData: 'https://api.openf1.org/v1/car_data',
@@ -17,10 +19,7 @@ const getCombinedData = async (req, res) => {
 
     try {
         const meetingData = await fetchData(endpoints.meetings);
-        console.log('Meeting Data:', meetingData);
-
         const sessionData = await fetchData(endpoints.sessions);
-        console.log('Session Data:', sessionData);
 
         const combinedData = {
             meeting: meetingData,
@@ -40,7 +39,9 @@ const getCombinedData = async (req, res) => {
 
         res.json(combinedData);
     } catch (error) {
-        console.error('Error fetching data:', error); // Log the full error for debugging
+        console.error("Error Fetching Data", error);
         res.status(500).json({ message: 'Error fetching data', error: error.message });
     }
 };
+
+module.exports = { getCombinedData };
