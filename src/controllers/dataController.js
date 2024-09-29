@@ -1,5 +1,3 @@
-const { fetchData } = require('../services/apiService');
-
 const getCombinedData = async (req, res) => {
     const endpoints = {
         carData: 'https://api.openf1.org/v1/car_data',
@@ -18,22 +16,45 @@ const getCombinedData = async (req, res) => {
     };
 
     try {
-        const combinedData = {};
+        console.log("Fetching data from multiple endpoints...");
+        
+        // Fetch data in parallel
+        const responses = await Promise.all([
+            fetchData(endpoints.meetings),
+            fetchData(endpoints.sessions),
+            fetchData(endpoints.carData),
+            fetchData(endpoints.drivers),
+            fetchData(endpoints.intervals),
+            fetchData(endpoints.laps),
+            fetchData(endpoints.location),
+            fetchData(endpoints.pit),
+            fetchData(endpoints.position),
+            fetchData(endpoints.raceControl),
+            fetchData(endpoints.stints),
+            fetchData(endpoints.teamRadio),
+            fetchData(endpoints.weather),
+        ]);
 
-        // Fetch each piece of data with individual error handling
-        for (const key in endpoints) {
-            try {
-                console.log(`Fetching ${key} data...`);
-                combinedData[key] = await fetchData(endpoints[key]);
-            } catch (error) {
-                console.error(`Error fetching ${key} data:`, error.message);
-                combinedData[key] = null; // Handle accordingly
-            }
-        }
+        // Organizing the responses
+        const combinedData = {
+            meeting: responses[0],
+            session: responses[1],
+            carData: responses[2],
+            drivers: responses[3],
+            intervals: responses[4],
+            laps: responses[5],
+            location: responses[6],
+            pit: responses[7],
+            position: responses[8],
+            raceControl: responses[9],
+            stints: responses[10],
+            teamRadio: responses[11],
+            weather: responses[12],
+        };
 
         res.json(combinedData);
     } catch (error) {
-        console.error('General error fetching data:', error);
+        console.error('Error fetching data:', error);
         res.status(500).json({ 
             message: 'Error fetching data', 
             error: error.message, 
@@ -41,5 +62,3 @@ const getCombinedData = async (req, res) => {
         });
     }
 };
-
-module.exports = { getCombinedData };
