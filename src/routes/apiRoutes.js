@@ -1,9 +1,8 @@
-const express = require('express');
-const { fetchData } = require('../controllers/dataController'); // Adjust according to your file structure
+const axios = require('axios');
 
-const router = express.Router();
+const fetchData = async (url) => {
+    const response = await axios.get(url);
+    return response.data; // Adjust if you need a specific property from the response
+};
 
-// Define the combined data route
-router.get('/combined-data', fetchData);
-
-module.exports = router;
+module.exports = { fetchData };
