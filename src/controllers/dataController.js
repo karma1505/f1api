@@ -1,6 +1,17 @@
+const fetchAllData = async (endpoints) => {
+    const results = {};
+    for (const [key, url] of Object.entries(endpoints)) {
+        try {
+            results[key] = await fetchData(url);
+        } catch (error) {
+            console.error(`Error fetching ${key}:`, error.message);
+            results[key] = null; // or handle the error as needed
+        }
+    }
+    return results;
+};
+
 const getCombinedData = async (req, res) => {
-    console.log("Request received:", req.method, req.url);
-    
     const endpoints = {
         carData: 'https://api.openf1.org/v1/car_data',
         drivers: 'https://api.openf1.org/v1/drivers',
@@ -19,41 +30,7 @@ const getCombinedData = async (req, res) => {
 
     try {
         console.log("Fetching data from multiple endpoints...");
-        
-        const responses = await Promise.all([
-            fetchData(endpoints.meetings),
-            fetchData(endpoints.sessions),
-            fetchData(endpoints.carData),
-            fetchData(endpoints.drivers),
-            fetchData(endpoints.intervals),
-            fetchData(endpoints.laps),
-            fetchData(endpoints.location),
-            fetchData(endpoints.pit),
-            fetchData(endpoints.position),
-            fetchData(endpoints.raceControl),
-            fetchData(endpoints.stints),
-            fetchData(endpoints.teamRadio),
-            fetchData(endpoints.weather),
-        ]);
-
-        console.log("Data fetched successfully:", responses);
-
-        const combinedData = {
-            meeting: responses[0],
-            session: responses[1],
-            carData: responses[2],
-            drivers: responses[3],
-            intervals: responses[4],
-            laps: responses[5],
-            location: responses[6],
-            pit: responses[7],
-            position: responses[8],
-            raceControl: responses[9],
-            stints: responses[10],
-            teamRadio: responses[11],
-            weather: responses[12],
-        };
-
+        const combinedData = await fetchAllData(endpoints);
         res.json(combinedData);
     } catch (error) {
         console.error('Error fetching data:', error); // Log error for debugging
