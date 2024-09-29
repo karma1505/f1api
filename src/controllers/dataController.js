@@ -21,32 +21,13 @@ const getCombinedData = async (req, res) => {
         const combinedData = {};
 
         // Fetch each piece of data with individual error handling
-        try {
-            console.log("Fetching meeting data...");
-            combinedData.meeting = await fetchData(endpoints.meetings);
-        } catch (error) {
-            console.error('Error fetching meeting data:', error.message);
-            combinedData.meeting = null; // Handle accordingly
-        }
-
-        try {
-            console.log("Fetching session data...");
-            combinedData.session = await fetchData(endpoints.sessions);
-        } catch (error) {
-            console.error('Error fetching session data:', error.message);
-            combinedData.session = null; // Handle accordingly
-        }
-
-        // Repeat for each endpoint
         for (const key in endpoints) {
-            if (!combinedData[key]) { // Avoid re-fetching if error occurred
-                try {
-                    console.log(`Fetching ${key} data...`);
-                    combinedData[key] = await fetchData(endpoints[key]);
-                } catch (error) {
-                    console.error(`Error fetching ${key} data:`, error.message);
-                    combinedData[key] = null; // Handle accordingly
-                }
+            try {
+                console.log(`Fetching ${key} data...`);
+                combinedData[key] = await fetchData(endpoints[key]);
+            } catch (error) {
+                console.error(`Error fetching ${key} data:`, error.message);
+                combinedData[key] = null; // Handle accordingly
             }
         }
 
