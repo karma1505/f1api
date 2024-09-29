@@ -41,3 +41,6 @@ const getCombinedData = async (req, res) => {
         });
     }
 };
+
+
+module.exports = { getCombinedData };

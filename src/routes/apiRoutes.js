@@ -1,6 +1,6 @@
 // src/routes/apiRoutes.js
 const express = require('express');
-const { getCombinedData } = require('../controllers/dataController'); // Adjust according to your file structure
+const { getCombinedData } = require('../controllers/dataController'); // Ensure this path is correct
 
 const router = express.Router();
 
