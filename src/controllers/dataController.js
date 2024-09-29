@@ -1,5 +1,6 @@
 const { fetchData } = require('../services/apiService');
 
+// Controller to fetch combined data from multiple endpoints
 const getCombinedData = async (req, res) => {
     const endpoints = {
         carData: 'https://api.openf1.org/v1/car_data',
@@ -18,7 +19,12 @@ const getCombinedData = async (req, res) => {
     };
 
     try {
+        // Fetching meeting data
+        console.log("Fetching meeting data...");
         const meetingData = await fetchData(endpoints.meetings);
+        
+        // Fetching session data
+        console.log("Fetching session data...");
         const sessionData = await fetchData(endpoints.sessions);
 
         const combinedData = {
@@ -37,10 +43,15 @@ const getCombinedData = async (req, res) => {
             weather: await fetchData(endpoints.weather),
         };
 
+        // Sending combined data as JSON response
         res.json(combinedData);
     } catch (error) {
-        console.error('Error fetching data:', error); // Log the entire error
-        res.status(500).json({ message: 'Error fetching data', error: error.message, stack: error.stack });
+        console.error('Error fetching data:', error); // Log the complete error for debugging
+        res.status(500).json({ 
+            message: 'Error fetching data', 
+            error: error.message, 
+            stack: error.stack 
+        });
     }
 };
 
