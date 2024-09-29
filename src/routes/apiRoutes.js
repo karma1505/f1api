@@ -1,8 +1,10 @@
-const axios = require('axios');
+// src/routes/apiRoutes.js
+const express = require('express');
+const { getCombinedData } = require('../controllers/dataController'); // Adjust according to your file structure
 
-const fetchData = async (url) => {
-    const response = await axios.get(url);
-    return response.data; // Adjust if you need a specific property from the response
-};
+const router = express.Router();
 
-module.exports = { fetchData };
+// Define the combined data route
+router.get('/combined-data', getCombinedData);
+
+module.exports = router;

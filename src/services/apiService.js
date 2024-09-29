@@ -1,13 +1,9 @@
+// src/services/apiService.js
 const axios = require('axios');
 
 const fetchData = async (url) => {
-    try {
-        const response = await axios.get(url);
-        return response.data;
-    } catch (error) {
-        console.error(`Error fetching data from ${url}:`, error.message);
-        return null;
-    }
+    const response = await axios.get(url);
+    return response.data; // Adjust if you need a specific property from the response
 };
 
 module.exports = { fetchData };
